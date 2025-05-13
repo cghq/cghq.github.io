@@ -6,6 +6,13 @@ const searchInput = document.getElementById('search');
 
 let recipes = [];
 
+function formatTitleFromFilename(filename) {
+return filename
+.replace(/.md$/, '')
+.replace(/[-_]/g, ' ')
+.replace(/\b\w/g, l => l.toUpperCase());
+}
+
 async function fetchRecipeList() {
 try {
 const res = await fetch(GITHUB_API);
@@ -23,20 +30,22 @@ return [];
 
 async function fetchRecipes() {
 const recipeFiles = await fetchRecipeList();
-const fetches = recipeFiles.map(async file => {
+const fetches = recipeFiles.map(async filename => {
+const title = formatTitleFromFilename(filename);
+const rawUrl = RAW_BASE + encodeURIComponent(filename);
 try {
-const res = await fetch(RAW_BASE + file);
+const res = await fetch(rawUrl);
+if (!res.ok) throw new Error(404 for ${filename});
 const text = await res.text();
-const title = file.replace(/.md$/, '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 return { title, content: marked.parse(text) };
 } catch (err) {
-console.error(Error loading ${file}:, err);
+console.warn(Skipping ${filename}: ${err.message});
 return null;
 }
 });
 
 const loaded = await Promise.all(fetches);
-recipes = loaded.filter(r => r !== null);
+recipes = loaded.filter(Boolean);
 displayRecipes(recipes);
 }
 
