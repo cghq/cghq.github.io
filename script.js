@@ -27,7 +27,7 @@ const fetches = recipeFiles.map(async file => {
 try {
 const res = await fetch(RAW_BASE + file);
 const text = await res.text();
-const title = text.split('\n')[0].replace(/^# /, '');
+const title = file.replace(/.md$/, '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 return { title, content: marked.parse(text) };
 } catch (err) {
 console.error(Error loading ${file}:, err);
