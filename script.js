@@ -1,4 +1,4 @@
-const GITHUB_REPO = 'https://raw.githubusercontent.com/your-username/your-repo/main/recipes/';
+const GITHUB_REPO = 'https://raw.githubusercontent.com/cghq/cghq.github.io/main/recipes/';
 
 const recipeFiles = [
   'chocolate-cake.md',
